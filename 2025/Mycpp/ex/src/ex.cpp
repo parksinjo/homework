@@ -13,10 +13,14 @@ class alu{
 
 public:
 	alu();
+	alu(int _r1);
 	void calc();
 };
 alu::alu(): r1{1}, r2{3}, oper{"+"}{
 		cout << r1 << oper << r2 << endl;
+}
+alu::alu(int _r1){
+	r1 = _r1;
 }
 
 

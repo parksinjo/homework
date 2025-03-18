@@ -8,27 +8,31 @@ using namespace std;
 
 //여기에 클래스 코드 작성할 것
 class alu{
-	unsigned int r1,r2;
+	int r1,r2;
 	char oper;
 
 public:
-	void println();
+	alu();
 	void calc();
-
-	alu::alu(): r1{1}, r2{3}, oper{"+"}{
-	    println();
+};
+alu::alu(): r1{1}, r2{3}, oper{"+"}{
+		cout << r1 << oper << r2 << endl;
+}
+int calc(oper){
+	int result;
+	switch(){
+	case'+':
+		result = r1+r2;
+		break;
+	case'-':
+		break;
+	case'*':
+		break;
 	}
 
 
-};
-void calc(){
-
+	return result;
 }
-
-void println(){
-	cout << r1 << oper << r2 <<endl;
-}
-
 //아래 main 함수는 수정 불가
 
 int main() {
