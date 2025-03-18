@@ -13,7 +13,7 @@ int main(){
 	cin >> boolalpha;
 	cout << boolalpha;
 
-	cout << "Hello world!" << endl;
+	cout << "Hello world!!" << endl;
 	cout << "name? ";
 	getline(cin,name);
 	cout<< "name: " << name << endl;

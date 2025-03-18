@@ -14,14 +14,16 @@ class alu{
 public:
 	alu();
 	void calc();
+	
+	alu::alu(): r1{1}, r2{3}, oper{"+"}{
+			cout << r1 << oper << r2 << endl;
+	}
+
+
+	int main() {
+	    alu machine; //생성자 구현하여 아래 출력 결과 1*3처럼 출력되게 각 멤버를 초기화 시킬 것
+	    cin >> machine.r1;
+	    cout << machine.r1;
+	}
 };
-alu::alu(): r1{1}, r2{3}, oper{"+"}{
-		cout << r1 << oper << r2 << endl;
-}
 
-
-int main() {
-    alu machine; //생성자 구현하여 아래 출력 결과 1*3처럼 출력되게 각 멤버를 초기화 시킬 것
-    cin >> machine.r1;
-    cout << machine.r1;
-}
