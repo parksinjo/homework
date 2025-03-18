@@ -13,6 +13,7 @@ class alu{
 
 public:
 	alu();
+	alu(int _r1);
 	void calc();
 	
 	alu::alu(): r1{1}, r2{3}, oper{"+"}{
@@ -26,4 +27,13 @@ public:
 	    cout << machine.r1;
 	}
 };
+<<<<<<< HEAD
+=======
+alu::alu(): r1{1}, r2{3}, oper{"+"}{
+		cout << r1 << oper << r2 << endl;
+}
+alu::alu(int _r1){
+	r1 = _r1;
+}
+>>>>>>> e0c61a1965e404c076f9b0f94b41da38a507fe1d
 

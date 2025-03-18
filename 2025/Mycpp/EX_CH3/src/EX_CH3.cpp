@@ -6,6 +6,7 @@
 #include <iostream>
 using namespace std;
 
+<<<<<<< HEAD
 class alu {
 public:
     unsigned int r1, r2;
@@ -31,6 +32,35 @@ int alu::calc(){
 void alu::println(){
     cout << r1 << oper << r2 << endl;
 }
+=======
+//여기에 클래스 코드 작성할 것
+class alu{
+	int r1,r2;
+	char oper;
+
+public:
+	alu();
+	void calc();
+};
+alu::alu(): r1{1}, r2{3}, oper{"+"}{
+		cout << r1 << oper << r2 << endl;
+}
+int calc(oper){
+	int result;
+	switch(){
+	case'+':
+		result = r1+r2;
+		break;
+	case'-':
+		break;
+	case'*':
+		break;
+	}
+
+
+	return result;
+}
+>>>>>>> e0c61a1965e404c076f9b0f94b41da38a507fe1d
 //아래 main 함수는 수정 불가
 
 int main(void) {
