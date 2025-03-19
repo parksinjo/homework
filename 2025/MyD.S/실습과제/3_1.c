@@ -1,4 +1,4 @@
-//실습과제 p. 프로그램 3.1 하노이의 탑
+//실습과제 p.75 프로그램 3.1 구조체 선언
 #include <stdio.h>
 
 typedef struct studentTag{ //구조체 선언

@@ -1,3 +1,4 @@
+//실습과제 p.85 프로그램 3.4 행렬 전치 프로그램
 #include <stdio.h>
 #define ROW 3
 #define COL 3

@@ -1,3 +1,4 @@
+//ì‹¤ìŠµê³¼ì œ p.96 í”„ë¡œê·¸ë¨ 3.8 ë™ì  ë©”ëª¨ë¦¬ í• ë‹¹ì˜ ì˜ˆ
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -9,7 +10,7 @@ int main()
 
 	p = (int *)malloc(SIZE * sizeof(int));
 	if (p == NULL) {
-		fprintf(stderr, "¸Ş¸ğ¸®°¡ ºÎÁ·ÇØ¼­ ÇÒ´çÇÒ ¼ö ¾ø½À´Ï´Ù.\n");
+		fprintf(stderr, "ë©”ëª¨ë¦¬ê°€ ë¶€ì¡±í•´ì„œ í• ë‹¹í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n");
 		exit(1);
 	}
 

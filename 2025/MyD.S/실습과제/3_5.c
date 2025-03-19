@@ -1,3 +1,4 @@
+//실습과제 p.87 프로그램 3.5 행렬 프로그램
 #include <stdio.h>
 #include <stdlib.h>
 #define MAX_TERMS 100

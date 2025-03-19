@@ -8,10 +8,8 @@ using namespace std;
 
 class alu {
 public:
-    unsigned int r1, r2;
+	unsigned int r1, r2;
     char oper;
-
-public:
     alu();
     int calc();
     void println();

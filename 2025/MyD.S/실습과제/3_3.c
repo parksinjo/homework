@@ -1,55 +1,80 @@
-//실습과제 p.77 프로그램 3.2 다항식 덧셈
+//실습과제 p.81 프로그램 3.3 다항식 덧셈2
 #include <stdio.h>
-#define MAX(a,b) (((a)>(b))?(a):(b))
-#define MAX_DEGREE 101
+#include <stdlib.h>
+#define MAX_TERMS 101
+
 typedef struct {
-  int degree;
-  float coef[MAX_DEGREE];
+	int coef;
+	int expon;
 }polynomial;
 
-polynomial poly_add1(polynomial A, polynomial B){
-  polynomial C;
-  int Apos = 0, Bpos = 0, Cpos = 0;
-  int degree_a = A.degree;
-  int degree_b = B.degree;
-  C.degree = MAX(A.degree, B.degree);
-  
-  while(Apos <= A.degree && Bpos <= B.degree){
-    if (degree_a > degree_b){
-      C.coef[Cpos++] = A.coef[Apos++];
-      degree_a--;
-    }
-    else if(degree_a == degree_b){
-      C.coef[Cpos++] = A.coef[Apos++] + B.coef[Bpos++];
-      degree_a--;
-      degree_b--;
-    }
-    else{
-      C.coef[Cpos++] = B.coef[Bpos++];
-      degree_b--;
-    }
-  }
-  return C;
+polynomial terms[MAX_TERMS] = { {8,3},{7,1},{1,0},{10,3},{3,2},{1,0} };
+int avail = 6;
+
+char compare(int a, int b)
+{
+	if (a > b) return '>';
+	else if (a == b) return '=';
+	else return '<';
 }
 
-void print_poly(polynomial p){
-  for (int i = p.degree; i>0; i--){
-    printf("%3.1fx^%d + ",p.coef[p.degree-i], i);
-  }
-  printf("%3.1f \n", p.coef[p.degree]);
+void attach(int coef, int expon)
+{
+	if (avail > MAX_TERMS) {
+		fprintf(stderr, "항의 개수가 너무 많음\n");
+		exit(1);
+	}
+	terms[avail].coef = coef;
+	terms[avail].expon = expon;
+	avail++;
 }
 
+void poly_add2(int As, int Ae, int Bs, int Be, int *Cs, int *Ce)
+{
+	int tempcoef;
+	*Cs = avail;
+	
+	while (As <= Ae && Bs <= Be)
+		switch (compare(terms[As].expon, terms[Bs].expon)) {
+		case '>':
+			attach(terms[As].coef, terms[As].expon);
+			As++;			
+			break;
+		case '=':
+			tempcoef = terms[As].coef + terms[Bs].coef;
+			if (tempcoef)
+				attach(tempcoef, terms[As].expon);
+			As++;
+			Bs++;		
+			break;
+		case '<':
+			attach(terms[Bs].coef, terms[Bs].expon);
+			Bs++;			
+			break;
+		}
 
-int main(){
-  polynomial a = {5,{3,6,0,0,0,10}};
-  polynomial b = {4, {7,0,5,0,1}};
-  polynomial c;
+	for (; As <= Ae; As++)
+		attach(terms[As].coef, terms[As].expon);
 
-  print_poly(a);
-  print_poly(b);
-  c = poly_add1(a,b);
-  printf("--------------------------------------------\n");
-  print_poly(c);
-  return 0;
-  
+	for (; Bs <= Be; Bs++)
+		attach(terms[Bs].coef, terms[Bs].expon);
+	*Ce = avail - 1;
+}
+
+void print_poly(int s, int e)
+{
+	for (int i = s; i < e; i++)
+		printf("%dx^%d + ", terms[i].coef, terms[i].expon);
+	printf("%dx^%d\n", terms[e].coef, terms[e].expon);
+}
+
+int main(void)
+{
+	int As = 0, Ae = 2, Bs = 3, Be = 5, Cs, Ce;
+	poly_add2(As, Ae, Bs, Be, &Cs, &Ce);
+	print_poly(As, Ae);
+	print_poly(Bs, Be);
+	printf("---------------------------------------\n");
+	print_poly(Cs, Ce);
+	return 0;
 }
