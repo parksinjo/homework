@@ -23,8 +23,12 @@ public:
     ~Person();
 };
 
-Person::Person(): Person("no-name",0,0,false){}
-
+Person::Person(): name{"no-name"}, id{}, weight{}, married{}{
+    // 위 함수 서두(:와 함수 본체 사이)에서 각 멤버를 초기화하는데 이는 함수 진입하기 전에
+    // 각 멤버의 값을 초기화하는 것이다. {}는 각 데이타 타입별로 디폴트 값으로 초기화하라는 의미임.
+    // 즉, name[]={'\0'}="", id=0, weight=0.0, married=false, address[]={'\0'}=""
+    cout << "Person::Person():"; println();
+}
 
 Person::Person(string _name, int _id, double _weight, bool _married){
 	setName(_name);
