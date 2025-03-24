@@ -1,7 +1,7 @@
-23:59:45 **** Rebuild of configuration Debug for project CH3_1 ****
+00:08:24 **** Rebuild of configuration Debug for project CH3_1 ****
 Info: Internal Builder is used for build
 g++ -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\CH3_1.o" "..\\src\\CH3_1.cpp" 
 g++ -o CH3_1.exe "src\\CH3_1.o" 
 
-23:59:46 Build Finished. 0 errors, 0 warnings. (took 932ms)
+00:08:25 Build Finished. 0 errors, 0 warnings. (took 936ms)
 
