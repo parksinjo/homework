@@ -25,13 +25,14 @@ public:
     Container();
     Container(string title);
     Container(string title, int size);
+    Container(const Container&);
     ~Container();
 
     void setTitle(string title);
     string getTitle();
     void printIntArray();
-    void newIntArray();
-    void inputIntArray();
+    Container& newIntArray();
+    Container& inputIntArray();
     void inputTitle(Container);
 };
 
@@ -50,6 +51,14 @@ Container::Container(string title, int size) {
     for(int i = 0; i<size; i++)
     	arr[i] = 0;
     cout << "Container(): "; printIntArray();
+}
+Container::Container(const Container& tmp){
+	this -> title = tmp.title;
+	this -> size = tmp.size;
+	this -> arr = new int[size];
+	for(int i=0; i<size; i++)
+		this->arr[i] = tmp.arr[i];
+	cout << "Container(Container& c): "; printIntArray();
 }
 
 Container::~Container() {
@@ -73,18 +82,20 @@ void Container::printIntArray() {
     cout << endl;
 }
 
-void Container::newIntArray() {
+Container& Container::newIntArray() {
     if (arr != nullptr)
         delete [] arr;
     cout << "element numbers of int array[]? ";
     cin >> size;
     arr = new int[size];
+    return *this;
 }
 
-void Container::inputIntArray() {
+Container& Container::inputIntArray() {
     cout << "input " << size << " integers: ";
     for (int i = 0; i < size; ++i)
         cin >> arr[i];
+	return *this;
 }
 
 void inputTitle(Container& d){
@@ -92,6 +103,7 @@ void inputTitle(Container& d){
 	cout << "input title: ";
 	getline(cin, tmp);
 	d.setTitle(tmp);
+
 }
 
 /******************************************************************************
@@ -112,16 +124,70 @@ void refParam() {
 	inputTitle(d);
 }
 
+Container& changeTitle(Container& rc) {
+    string s;
+    cout << "title to change: ";
+    getline(cin, s);
+    rc.setTitle(s);
+    return rc;       // rc의 원본 객체의 참조를 리턴함
+}
+
 void refRet1() {
+	skipEnter();
+	Container c("C");
+	Container& rc = changeTitle(c); // rc는 원본 객체 c의 데이타를 공유하는 참조변수임
+	cout << " c.getTitle(): " <<  c.getTitle() << endl;
+	cout << "rc.getTitle(): " << rc.getTitle() << endl;
+	cout << "---" << endl;
+	cout << "appendTitle(c).getTitle(): " << changeTitle(rc).getTitle() << endl;
+	cout << "             c.getTitle(): " <<               c.getTitle() << endl;
+	cout << "            rc.getTitle(): " <<              rc.getTitle() << endl;
+	// changeTitle(rc)에 의해 반환되는 참조 역시 원본 객체 c의 데이타를 공유하는 참조변수임
+	// 참조 변수는 생성자 및 소멸자가 없다. 원본 객체의 데이터를 공유하는 또 다른 변수 이름일 뿐이다.
 }
 
 void refRet2() {
+	Container c("C");
+	c.newIntArray().inputIntArray().printIntArray();
 }
 
 void explicitCopy() {
+    Container c1("c1", 4);
+    c1.inputIntArray().printIntArray();
+    cout << "---" << endl;
+    Container c2(c1);
+    c2.setTitle("c2");
+    c2.printIntArray();
+    cout << "---" << endl;
+    c2.inputIntArray().printIntArray();
+    c1.printIntArray();
+}
+
+void callByValue(Container v) {
+    cout << "callByValue" << endl;
+    v.setTitle("V");
+    v.inputIntArray().printIntArray();
+}
+
+Container returnValue(Container& r) {
+    cout << "returnValue" << endl;
+    return r;  // 자동으로 복사생성자 호출
 }
 
 void implicitCopy() {
+    Container a("A", 2);
+    a.inputIntArray().printIntArray();
+    cout << "---" << endl;
+    Container b = a; // 자동으로 복사생성자 호출
+    b.setTitle("B");
+    b.inputIntArray().printIntArray();
+    cout << "---" << endl;
+    callByValue(a); // 자동으로 복사생성자 호출
+    cout << "---" << endl;
+    Container c = returnValue(a);
+    c.setTitle("C");
+	c.inputIntArray().printIntArray();
+	cout << "---" << endl;
 }
 
 string menuStr =
