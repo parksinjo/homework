@@ -12,4 +12,3 @@ def write_n(ptr: bytes, length: int):
 length = 0xf
 ptr = memory
 write_n(ptr, length)
-
