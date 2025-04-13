@@ -8,7 +8,7 @@ typedef struct {
 	struct ListNode* link;
 }ListNode;
 
-ListNode* insert_first(ListNode* head, element value){
+ListNode* insert_first(ListNode* head, element value) {
 	ListNode* p = (ListNode*)malloc(sizeof(ListNode));
 	p->data = value;
 	p->link = head;
@@ -16,13 +16,13 @@ ListNode* insert_first(ListNode* head, element value){
 	return head;
 }
 
-void print_list(ListNode* head){
+void print_list(ListNode* head) {
 	for (ListNode* p = head; p != NULL; p = p->link)
 		printf("%d->", p->data);
 	printf("NULL \n");
 }
 
-ListNode* reerse(ListNode* head){
+ListNode* reverse(ListNode* head) {
 	ListNode* p, * q, * r;
 
 	p = head;
@@ -36,7 +36,7 @@ ListNode* reerse(ListNode* head){
 	return q;
 }
 
-int main(){
+int main() {
 	printf("Lab4 리스트를 역순으로 만드는 연산 결과값\n");
 	ListNode* head1 = NULL;
 	ListNode* head2 = NULL;
@@ -47,6 +47,6 @@ int main(){
 	print_list(head1);
 
 	head2 = reverse(head1);
-	print_lis(head2);
+	print_list(head2);
 	return 0;
 }
