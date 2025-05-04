@@ -1,19 +1,17 @@
+
+
 /*
- * CH5_2: ch5_2.cpp
+ * CH6_2: ch6_2.cpp
  *
  *  Created on: 2025. . .
  *      Author: Shin Jo Park
  *
- *  + class VectorPerson: erase(), insert() 추가
- *  + class PersonManager: remove(), insert() 추가
- *  + class ClassAndObject: 멤버 객체 변수의 초기화 시점 및 방법 추가
- *        (멤버 선언시, 생성자 서두, 생성자 본체 등)
- *        함수 선언 시 매개변수 const의 필요성 제기
- *  + 이를 위해 class Init1 ~ class Init6 추가, ClassAndObject 내부에
- *        memberInitialization(), class Parameter, normalParameter(),
- *        constParameter(), temporaryParameter(), stringParameter(),
- *        parameters() 멤버 추가
+ *  + Person, VectorPerson, PersonManager::display() 등 출력문 주석처리
+ *  + Person, Memo, VectorPerson에 operator 추가
+ *  + Person::assign()을 operator=로 변환
+ *  + OperatorOverload 클래스 추가
  */
+
 
 //-----------------------------------------------------------------------------
 // 주의: 아래 헤드 파일을 include하는 < > 표시가 oj 시스템에서 HTML tag로 잘못 인식되기 때문에
@@ -27,7 +25,7 @@ using namespace std;  // 헤드 파일은 반드시 이 문장 앞쪽에 include
 /******************************************************************************
  * 아래 상수 정의는 필요에 따라 변경하여 사용하라.
  ******************************************************************************/
-#define AUTOMATIC_ERROR_CHECK true// true: 자동 오류 체크, true: 키보드에서 직접 입력하여 프로그램 실행
+#define AUTOMATIC_ERROR_CHECK false// true: 자동 오류 체크, true: 키보드에서 직접 입력하여 프로그램 실행
 
 /******************************************************************************
  * Person structure and its manipulation functions
@@ -87,7 +85,7 @@ Person::Person(const string& name, int id, double weight, bool married, const ch
         name(name), id{id}, weight{weight}, married{married}, memo_c_str{} {
     // 생성자 서두에서 memo_c_str{}은 초기 값으로 디폴트 값인 nullptr(실제로는 주소 값 0)로 설정됨
     copyAddress(address);
-    cout << "Person::Person(...):"; println();
+    //cout << "Person::Person(...):"; println();
 }
 
 Person::Person(const Person& p):
@@ -97,11 +95,11 @@ Person::Person(const Person& p):
 	    //p 객체의 메모 문자열을 멤버 memo_c_str에 복사함 (copyMemo() 사용해야 함)
 		copyAddress(p.address);
 		copyMemo(p.memo_c_str);
-	    cout << "Person::Person(const Person&):"; println();
+	    //cout << "Person::Person(const Person&):"; println();
 	}
 
 Person::~Person() {
-	cout << "Person::~Person():"; println();
+	//cout << "Person::~Person():"; println();
 	// 위 if 문장들은 i) "address deleted" 또는
 	// ii) "memo_c_str deleted" 또는
 	// iii) "address, memo_c_str deleted" 가 출력됨; 즉, 셋 중 하나가 출력됨
@@ -369,6 +367,15 @@ public:
     void scrollDown();
     void inputMemo();
     void run();
+    Memo operator + (const Memo &m) {
+		Memo tmp;
+		tmp.mStr = this->mStr + m.mStr;
+		return tmp;
+	}
+	Memo& operator += (const Memo &m) {
+		this->mStr = this->mStr + m.mStr;
+		 return *this;
+}
 };
 
 void Memo::displayMemo() { // Menu item 1
@@ -806,14 +813,14 @@ public:
 VectorPerson::VectorPerson(int capacity):allocSize{capacity},count{}{
     // allocSize = capacity, count = 0; 초기화를 위 함수 서두(위 /* */ 주석 사이)에서 할 것
     // 함수 서두에서 초기화하는 방법은 Person 클래스 참고할 것
-    cout << "VectorPerson::VectorPerson(" << allocSize << ")" << endl;
+    //cout << "VectorPerson::VectorPerson(" << allocSize << ")" << endl;
     pVector = new Person*[allocSize]; // Person* 들의 배열을 위한 동적 메모리 할당
 }
 
 VectorPerson::~VectorPerson() {
     /* TODO 문제 [2]: 동적으로 할당된 배열 pVector 반납: pVector가 배열임을 명심하라. */
 	delete[] pVector;
-    cout << "VectorPerson::~VectorPerson(): pVector deleted" << endl;
+    //cout << "VectorPerson::~VectorPerson(): pVector deleted" << endl;
 }
 
 void VectorPerson::push_back(Person* p) {
@@ -908,7 +915,7 @@ public:
 };
 
 PersonManager::PersonManager(Person* array[], int len) {
-    cout << "PersonManager::PersonManager(array[], len)" << endl;
+    //cout << "PersonManager::PersonManager(array[], len)" << endl;
     for(int i=0; i<len; i++){
     	Person* tmp = new Person{*array[i]};
     	persons.push_back(tmp);
@@ -934,8 +941,8 @@ void PersonManager::display() { // Menu item 1
         cout << "[" << i << "] ";
         persons.at(i)->println();
     }
-    cout << "empty():" << persons.empty() << ", size():" << persons.size()
-         << ", capacity():" << persons.capacity() << endl;
+    //cout << "empty():" << persons.empty() << ", size():" << persons.size()
+    //     << ", capacity():" << persons.capacity() << endl;
 }
 
 void PersonManager::printNotice(const string& preMessage, const string& postMessage) {
@@ -1845,7 +1852,7 @@ public:
 			nullptr, &AM::changeAddress, &AM::changeMemo,&AM::manageMemo,
 			&AM::copyConstructor,&AM::nullptrMember,&AM::inputPerson,
 		};
-        		int menuCount = sizeof(func_arr) / sizeof(func_arr[0]); // func_arr[] 길이
+        int menuCount = sizeof(func_arr) / sizeof(func_arr[0]); // func_arr[] 길이
         string menuStr =
             "++++++++++++++++ Allocated Member Menu ++++++++++++++++\n"
             "+ 0.Exit 1.ChangeAddress 2.ChangeMemo 3.UsingMemoMenu +\n"
@@ -1863,6 +1870,64 @@ public:
 }; // ch5_2: AllocatedMember
 
 /******************************************************************************
+ * ch7_1: OperatorOverload class
+ ******************************************************************************/
+class OperatorOverload
+{
+    Person p;
+    Memo   m;
+
+    void disp_memo(const string& name, Memo& m) {
+		cout << name << endl; m.displayMemo(); cout << endl;
+	}
+
+	void memoAdd() { // Memu item 1
+		Memo m1(m);
+		Memo m2("James Fenimore Cooper\n");
+		disp_memo("m1", m1);
+		disp_memo("m2", m2);
+		// operator +
+		Memo m3 = m1 + m2;
+		disp_memo("m3 = m1 + m2", m3);
+		// operator +=
+		m3 += Memo("1st const added memo line.\n");
+		disp_memo("m3 += Memo(...)", m3);
+		// operator +
+		m3 = m3 + m2 + Memo("2nd const added memo line.\n");
+		disp_memo("m3 = m3 + m2 + Memo(...)", m3);
+	}
+
+public:
+    OperatorOverload():
+        p("p",  1, 65.4, true,  "Jong-ro 1-gil, Jongno-gu, Seoul"),
+        m("The Last of the Mohicans\n") {}
+    void run() {
+        using OOL = OperatorOverload;
+
+        // TODO: func_t, func_arr[], menuCount 선언
+        using func_t = void (OperatorOverload::*)();
+		func_t func_arr[] = {
+			nullptr,&OOL::memoAdd,
+		};
+		int menuCount = sizeof(func_arr) / sizeof(func_arr[0]); // func_arr[] 길이
+        string menuStr =
+            "+++++++++++++++++++ Operator Overload +++++++++++++++++\n"
+            "+ 0.Exit 1.MemoAdd 2.Equal 3.Add 4.Assign 5.Increment +\n"
+            "+ 6.Shift 7.TypeConversion 8.CurrentUser              +\n"
+            "+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+
+        // TODO: while 문장 삽입하여 선택된 메뉴항목 실행하는 함수 호출
+        while (true) {
+			int menuItem = UI::selectMenu(menuStr, menuCount);
+			if (menuItem == 0) return;
+			(this->*func_arr[menuItem])();
+		}
+		cout << menuStr;
+    }
+
+}; // ch7_1: OperatorOverload class
+
+/******************************************************************************
  * Main Menu
  ******************************************************************************/
 
@@ -1870,11 +1935,12 @@ class MainMenu
 {
 public:
     void run() {
-        int menuCount = 5; // 상수 정의
+        int menuCount = 6; // 상수 정의
         string menuStr =
         "******************************* Main Menu *********************************\n"
         "* 0.Exit 1.PersonManager(ch3_2, 4, 6)                                     *\n"
         "* 2.Class:Object(ch3_1) 3.CopyConstructor(ch5_1) 4.AllocatedMember(ch5_2) *\n"
+        "* 5.OperatorOverload(ch7)                                                 *\n"
         "***************************************************************************\n";
 
         while (true) {
@@ -1886,6 +1952,7 @@ public:
             case 2: ClassAndObject().run();           break;
             case 3: CopyConstructor().run();		  break;
             case 4: AllocatedMember().run();		  break;
+            case 5: OperatorOverload().run();		  break;
             }
         }
         cout << "Good bye!!" << endl;
