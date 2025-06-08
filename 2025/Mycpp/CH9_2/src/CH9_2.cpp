@@ -130,25 +130,17 @@ public:
     // 컴파일러에 의해 제공되는 기본 소멸자와 복사 생성자를 활용하면 됨
 
     void sendCall(const string& callee)    override {
-		/*아래 실행 결과를 참고해서 "Made a call to "와 callee를 출력한 후 TradeMark를 출력하라.
-		Phone 클래스로부터 상속 받은 static 포인트 멤버 변수의 baseStation->connectTo()
-		멤버 함수를 호출하여 수신자에게 신호를 전송하라. 이 함수의 인자로
-		SmartPhone에 저장되어 있는 송신자 owner와 매개변수인 수신자 callee를 지정하라.
-		*/
     	cout << "Made a call to " << callee; printTradeMark("Phone");
     	baseStation->connectTo(owner,callee);
 	}
 
     void receiveCall(const string& caller) override {
-
-        //실행 결과를 참고해서 "Recieved a call from "와 caller를 출력한 후 TradeMark를 출력하라.
-        // 위 "Recieved" 단어가 오타인데 그래도 일단 이렇게 입력하세요.^^
     	cout << "Recieved a call from " << caller; printTradeMark("Phone");
     }
 
     void calculate(double oprd1, char op, double oprd2) override {
         cout << oprd1 << " " << op << " " << oprd2 << " = ";
-        switch (op) { // switch 문장 내에서 직접 계산함
+        switch (op) {
         case '+': cout << oprd1 + oprd2; break;
         case '-': cout << oprd1 - oprd2; break;
         case '*': cout << oprd1 * oprd2; break;
@@ -157,9 +149,6 @@ public:
         }
         printTradeMark("Calculator");
     }
-
-    // istream& in에서 각 토큰을 분리한다. 여기서 in은 키보드인 cin일 수도 있고,
-    // 또는 문자열 스트림(키보드가 아닌 문자열에서 읽음)일 수도 있다.
     void calculate(istream& in) override {
         double oprd1, oprd2;
         string op, soprd2;
@@ -174,15 +163,9 @@ public:
     }
 
     void calculate(const string& expr) override {
-        // 키보드가 아닌 string expr에서 데이타를 읽어 들일 수 있는 istringstream을 만든다.
         istringstream iss(expr);
-        // istringstream는 istream을 상속 받았기 때문에 iss는 자동으로 istream으로 업캐스팅 됨
         calculate(iss); // calculate(istream& in)을 호출함
-        // calculate(cin)는 키보드에서 수식을 읽어 계산하지만
-        //   calculate(iss)는 키보드가 아닌 문자열 스트림 iss에서 수식을 읽어 계산함.
-        // GalaxyPhone은 여기서 calculate(istream& in)를 호출하지만
-        //   아래 IPhone의 경우 반대로 calculate(istream& in)에서
-        //   calculate(const string& expr)을 호출함 (회사마다 구현 방법이 다름)
+
     }
 
     SmartPhone* clone() override { return new GalaxyPhone(*this); }
@@ -294,14 +277,10 @@ protected:
     SmartPhone* newSmartPhone();           // 9_1에서 추가
 
 public:
-    //Person():Person(""){}
-    //Person(const string name):Person(name,0,0,false,""){}
     Person(const string& name = {}, int id = {}, double weight = {}, bool married = {}, const char *address = {});
     Person(const Person& p);
     virtual ~Person();
-    virtual Person* clone() { /* TODO: return ...; */
-    	return new Person(*this);
-    } // ch7_3에서 추가
+    virtual Person* clone() { return new Person(*this); } // ch7_3에서 추가
 
     void set(const string& name, int id, double weight, bool married, const char *address);
     void setName(const string& name)       { this->name = name; }
@@ -321,9 +300,8 @@ public:
     const char* getAddress() const {return address; } // 수정하시오.
     const char* getMemo()    const {return memo_c_str;}
     SmartPhone* getSmartPhone() const { return smartPhone; }
-	Phone*      getPhone()      const { return nullptr /* TODO */; }
-	Calculator* getCalculator() const { return nullptr /* TODO */; }
-	SmartPhone* getPhone(){return smartPhone;}
+	Phone*      getPhone()      const { return smartPhone; }
+	Calculator* getCalculator() const { return smartPhone; }
 
     virtual void input(istream& in)  { inputMembers(in); } // ch3_2에서 추가
     virtual void print(ostream  &out) { printMembers(&out); }
@@ -346,14 +324,12 @@ public:
 	Person& operator >> (char* name);
 	operator string() { return this->name; }
 	operator int()    { return this->id; }
-    SmartPhone* getCalculator();
-
 
 };
 
-Person::Person(const string& name, int id, double weight, bool married, const char* address):
-        name(name), id{id}, weight{weight}, married{married}, memo_c_str{} {
-    // 생성자 서두에서 memo_c_str{}은 초기 값으로 디폴트 값인 nullptr(실제로는 주소 값 0)로 설정됨
+Person::Person(const string& name, int id, double weight, bool married, const char* address)
+  : name(name), id{id}, weight{weight}, married{married}, address(nullptr), memo_c_str(nullptr)
+{
     copyAddress(address);
     smartPhone = newSmartPhone();
     //cout << "Person::Person(...):"; println();
@@ -361,25 +337,17 @@ Person::Person(const string& name, int id, double weight, bool married, const ch
 
 Person::Person(const Person& p):
 	name(p.name), id{p.id}, weight{p.weight}, married{p.married} {
-	    //TODO: p 객체의 address 문자열을 멤버 address에 복사함
-	    //(즉, setAddress() 대신 copyAddress() 사용해야 함)
-	    //p 객체의 메모 문자열을 멤버 memo_c_str에 복사함 (copyMemo() 사용해야 함)
+
 		copyAddress(p.address);
 		copyMemo(p.memo_c_str);
-		smartPhone = p.smartPhone->clone(); // 기존 p.smartPhone 객체를 복제해서 대입
+		smartPhone = p.smartPhone->clone();
 	    //cout << "Person::Person(const Person&):"; println();
 	}
 
 Person::~Person() {
 	//cout << "Person::~Person():"; println();
-	// 위 if 문장들은 i) "address deleted" 또는
-	// ii) "memo_c_str deleted" 또는
-	// iii) "address, memo_c_str deleted" 가 출력됨; 즉, 셋 중 하나가 출력됨
 
-	//TODO: address와 memo_c_str가 포인터하는 배열 메모리를 반납한다.
-	//	  이들 포인터가 nullptr인 경우 반납하지 말아야 한다.
-	if(smartPhone) delete smartPhone;
-	smartPhone = nullptr;
+	if(smartPhone) { delete smartPhone; smartPhone = nullptr; }
 	if(address) delete[] address;
 	if(memo_c_str)delete[] memo_c_str;
 }
@@ -511,10 +479,6 @@ Person operator+(double n, const Person & p){
 	return temp;
 }
 Person& Person::operator=(const Person &p){
-	if(this->address)
-		delete[] address;
-	if(this->memo_c_str)
-		delete[] memo_c_str;
 	name = p.name;
 	passwd = p.passwd;
 	id = p.id;
@@ -570,10 +534,6 @@ SmartPhone* Person::newSmartPhone(){
 void Person::setSmartPhone(SmartPhone* smPhone){
 	if(smartPhone)delete smartPhone;
 	smartPhone = (smPhone? smPhone:newSmartPhone());
-}
-
-SmartPhone* Person::getCalculator(){
-	return getSmartPhone();
 }
 
 /******************************************************************************
@@ -908,8 +868,8 @@ public:
 	static bool checkInputError(istream&, const string&);
 	static bool checkDataFormatError(istream& in);
 	static bool inputPerson(Person&);
-	static const string& getNext(const string& msg);
-	static const string& getNextLine(const string& );
+	static string& getNext(const string& msg);
+	static string& getNextLine(const string& );
 	static int getInt(const string& );
 	static int getPositiveInt(const string& );
 	static int getIndex(const string& , int );
@@ -946,7 +906,7 @@ bool UI::inputPerson(Person& p) {
 }
 
 // 입력장치에서 하나의 단어로 구성된 문자열을 입력 받음
-const string& UI::getNext(const string& msg) {
+string& UI::getNext(const string& msg) {
     cout << msg; // 입력용 메시지를 출력
     cin >> line; // 하나의 단어를 읽어 들임
     if (echo_input) cout << line << endl; // 자동체크 시 출력됨
@@ -955,7 +915,7 @@ const string& UI::getNext(const string& msg) {
 }                            // 다음의 getNextLine()에서 엔터만 읽어 들일 수 있기 때문에
 
 // 입력장치에서 한 행을 입력 받음
-const string& UI::getNextLine(const string& msg) {
+string& UI::getNextLine(const string& msg) {
     cout << msg; // 입력용 메시지를 출력
     getline(cin, line); // 한 행을 읽어 들임
 
@@ -1425,19 +1385,13 @@ void CurrentUser::staticMember() { // Menu item 11
 }
 
 void CurrentUser::changeSmartPhone() {
-    string maker = UI::getNext("Maker of phone to change(ex: Samsung or Apple)? ");
+    string& maker = UI::getNext("Maker of phone to change(ex: Samsung or Apple)? ");
     SmartPhone *p;
     if(maker=="Samsung")
     	p = new GalaxyPhone(rUser.getName());
     else if(maker=="Apple")
     	p = new IPhone(rUser.getName(),"14");
-    /*
-    maker가 	"Samsung"이면 GalaxyPhone 객체를
-    		"Apple" 이면 IPhone 객체를 동적으로 할당하여 생성한 후,
-            (위 각 스마트폰 객체 생성 시 owner는 rUser의 이름으로 지정하고
-             IPhone인 경우 모델명은 "14"로 하라.)
-           생성된 스마트폰 객체를 rUser.setSmartPhone(...)을 호출하여 등록한다.*/
-    else { // maker가 "Samsung" 또는 "Apple"이 아닌 경우
+    else {
         cout << maker << ": WRONG phone's maker" << endl;
         return;
     }
@@ -1449,14 +1403,11 @@ void CurrentUser::calculate() {
     cout << "Expression: ";
     Calculator* cal = rUser.getCalculator();
     cal->calculate(cin);
-    // 추상클래스 포인트 변수 cal을 이용해 가상함수 calculate(cin) 호출 ->
-    // 파생클래스(GalaxyPhone or IPhone)의 override된 함수가 실제 호출됨
 }
 
 void CurrentUser::phoneCall() {
-    string callee = UI::getNext("Name to call? "); // 수신자 이름
-    rUser.getPhone()->sendCall(callee);             // rUer가 송신자임
-    // 궁극적으로 파생 클래스인 Galaxy 또는 IPhone의 오버라이딩된 sendCall()이 호출된다.
+    string& callee = UI::getNext("Name to call? ");
+    rUser.getPhone()->sendCall(callee);
 }
 void CurrentUser::calExpr() {
     cout << "Expression: ";
@@ -1802,60 +1753,42 @@ void PersonManager::clear() { // Menu item 3
     deleteElemets();
     display();
 }
-// VectorPerson에 저장된 사람들 중 매개변수 name과 동일한 이름을 가진 사람을 찾는다.
+
 Person* PersonManager::findByName(const string& name) {
     for (int i=0; i<persons.size(); i++){
     	if(persons[i]->getName()==name)
     		return  persons[i];
     }
-    // 찾지 못한 경우
     cout << name + ": NOT found" << endl;
     return nullptr;
 }
 
-// 사용자로부터 로그인할 사람의 이름과 비번을 입력받고 동일한 이름을 가진 Person 객체를
-// persons에서 찾고 비번이 일치하는지 체크한 후 CurrentUser(p).run() 실행한다.
-// 기존(ch4-1)의 Main Menu에서 호출하던 CurrentUser를 메뉴항목에서 삭제한 후
-// 대신 여기서 호출함(사용자가 선택한 인적정보 p를 인자로 넘겨 주면서)
 void PersonManager::login() {
     string name = UI::getNext("user name: ");
-    Person* p = findByName(name); // 해당 사람을 VectorPerson에서 찾는다.
-    if (p == nullptr) return;     // 해당 사람 존재하지 않음
+    Person* p = findByName(name);
+    if (p == nullptr) return;
     string passwd = UI::getNextLine("password: ");
-    if (passwd != p->getPasswd()) // 비번 불일치
+    if (passwd != p->getPasswd())
         cout << "WRONG password!!" << endl;
     else
         CurrentUser(*p).run();
 }
 
 void PersonManager::insert() { // Menu item 5
-    //persons 벡터가 비어 있을 경우 삽입할 index 위치를 무조건 0으로 설정하고
-    //그렇지 않은 경우 UI::getIndex()를 호출하여 사용자로부터 입력할 위치(index)를 입력 받아라.
-    //    주의: 기존 원소의 맨 끝에 추가하는 것도 가능해야 한다.(인덱스 값의 범위에 주의)
-    //         UI::getIndex() 호출 시 출력할 메시지는 실행 결과를 참조하라.
 	int index;
 	if(persons.empty()) index = 0;
 	else index = UI::getIndex("Index to insert in front? ",persons.size()+1);
-	printNotice("Input ", "to insert:"); // 호출 시 이 함수 인자는 append()와 실행 결과를 참조하여 완성하라.
+	printNotice("Input ", "to insert:");
 	Person* p = new Person{};
 	p = Factory::inputPerson(cin);
 
-    //새로운 Person 객체를 할당받고 인적정보를 입력 받은 후 새 변수 p에 저장
-    //   (위 문장은 append() 함수 참조)
     if (p == nullptr) return;
-    	//persons 벡터의 index 위치에 p를 삽입하라.
+
     persons.insert(index,p);
     display();
 }
 
 void PersonManager::remove() { // Menu item 6
-    /*벡터 persons가 비어 있을 경우 아래 메시지만 출력하고 바로 리턴하라.
-        cout << "No entry to remove" << endl;
-    UI::getIndex("Index to delete? ", persons.size())를 호출하여 삭제할
-    Person 객체의 인덱스를 사용자로부터 입력 받는다.
-    persons의 index 위치에 저장된 포인터가 포인트하는 Person 객체의 메모리를 반납한다.
-    persons의 위 VectorPerson::erase(...)를 호출하여 index 원소를 삭제하라.
-    display();*/
 	if(persons.empty()){
 		cout << "No entry to remove" << endl;
 		return;
@@ -1869,30 +1802,24 @@ void PersonManager::remove() { // Menu item 6
 void PersonManager::find() { // Menu item 9
     printNotice("Input", "to find by operator ==");
 
-    Person* p = new Person;//새 객체를 동적으로 생성한 후 인적정보를 입력받고 p에 대입 [insert() 참고]
+    Person* p = new Person;
     p = Factory::inputPerson(cin);
     if (p == nullptr) return;
-    //인적정보가 잘못 입력되었으면 여기서 리턴 [insert() 함수 참고]
 
     bool found = false;
-    for (int i = 0; i<persons.size(); i++){//문을 이용하여 persons 벡터의 모든 객체 포인터 persons[i]에 대해
-        if (typeid(*persons[i])==typeid(*p) && *persons[i] == *p){ 	//persons[i]가 p가 포인터하는 객체와 동일한 종류의 객체이고, (아래 설명 참고)
-			found = true;		// == 연산자를 이용하여 p 객체와 비교하여 같으면)
+    for (int i = 0; i<persons.size(); i++){
+        if (typeid(*persons[i])==typeid(*p) && *persons[i] == *p){
+			found = true;
 			cout << "[" << i << "] "; persons[i]->println();
-           // found를 true로 설정
         }
     }
 
-    //위 for에서 동일한 객체를 하나도 찾지 못했으면 아래와 같이 출력
+
     if(!found)
     	cout << "NOT found by operator ==";
 }
 void PersonManager::dispStudentWorkers() { // Menu item 10
     cout << "dispStudentWorkers(): " << endl;
-    /*for문을 이용하여 persons 벡터의 각 객체 포인터 persons[i]에 대해
-        persons[i]가 StudentWorker 클래스 객체이면 아래처럼 출력.
-        (참고로 typeid(...)의 인자(...)는 [객체] 또는 [클래스이름]이어야 함.
-         인자가 포인터면 인자 앞에 *를 붙여야만 함) */
     for(int i=0; i<persons.size(); i++)
     	if(typeid(*persons[i]) == typeid(StudentWorker)){
     		cout << "[" << i << "] ";
@@ -1905,19 +1832,14 @@ void PersonManager::dispPhones() { // Menu item 11
     for(int i = 0; i<count; i++){
         cout << "[" << i << "] "; persons[i]->getSmartPhone()->println();
     }
-        // 추상클래스 SmartPhone::println()->print()->가상함수 getMaker()->
-        // 파생클래스(Galaxy 또는 IPhone)의 override된 getMaker() 함수가 실제 호출됨
 }
 bool PersonManager::connectTo(const string& caller, const string& callee) {
-    Person* p = findByName(callee);//callee라는 이름을 가진 사람을 찾아 p에 저장;
-    //(사람 찾기는 기존 멤버 함수 이용할 것: login() 참조)
-    if (p == nullptr) return false; // 수신자를 찾지 못한 경우
-    //실행 결과를 참고하여 "Base station: sends a call signal of "와 caller, 그리고
-    //    " to "와 callee를 출력하라.
+	Person* p = findByName(callee);
+    if (p == nullptr) return false;
     cout << "Base station: sends a call signal of "<<caller << " to "<<callee<<endl;
-    //p의 Phone을 구한 후 그 폰의 receiveCall() 호출 (p와 폰이 모두 포인터임)
-    p->getPhone()->receiveCall(caller);
-    //(Phone 구하는 것은 위 CurrentUser::phoneCall() 참고)
+    if (p && p->getPhone()) {
+    	p->getPhone()->receiveCall(caller);
+    }
     return true;
 }
 
